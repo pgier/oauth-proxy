@@ -1,0 +1,7 @@
+FROM registry.svc.ci.openshift.org/ocp/builder:golang-1.10 AS builder
+COPY . /go/src/github.com/openshift/oauth-proxy
+RUN cd /go/src/github.com/openshift/oauth-proxy && go build .
+
+FROM registry.svc.ci.openshift.org/ocp/4.0:base
+COPY --from=build /go/src/github.com/openshift/oauth-proxy/oauth-proxy /bin/oauth-proxy
+ENTRYPOINT ["/bin/oauth-proxy"]
